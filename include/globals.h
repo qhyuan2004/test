@@ -21,7 +21,7 @@
  *
  * DEFAULT: true
  */
-bool useSampleData = true;
+bool useSampleData = false;
 
 /*
  * If useSampleData is set to false, review and\or update custom (e.g., custom*)
@@ -30,14 +30,16 @@ bool useSampleData = true;
  * (The channel tags\identifiers should reference a standard, active MCL MasterName, such as: mACIavg, mWtotal, mTotalEnergy, etc.
  *
  */
-char* customConnectionString = "HostName=[Enter Your IoT Hub Prefix Name Here].azure-devices.net;DeviceId=[Enter Your Device Name Here];SharedAccessKey=[Enter the DeviceId's SharedAccessKey Here]";
-char* customDeviceUUID = "00000000-0000-0000-00000000000000000";
-char* customDeviceProfileUUID = "00000000-0000-0000-00000000000000000";
-char* customDeviceName = "Device Model Name";
-char* customDeviceSerialNumber = "Device Serial Number";
-char* customDeviceAssetTag = "Device Asset Tag";
-char* customDeviceMAC = "Device MAC";
-char* customChannelTag = "MCL_MasterName";
+char* customConnectionString = "HostName=EatonAdopterIothub1.azure-devices.net;DeviceId=c1e7665f-7744-4cd8-974e-0d81e7025fa3;SharedAccessKey=+D3S6w7MikUf0UCuyoWw6HGUDv2y4sLSi7LkzCk0zw8=";
+char* customDeviceUUID = "c1e7665f-7744-4cd8-974e-0d81e7025fa3";
+char* customDeviceProfileUUID =   "c655ae1e-bc8b-11e6-a4a6-cec0c932ce01";
+//char* customDeviceProfileUUID = "c655b09e-bc8b-11e6-a4a6-cec0c932ce01";
+
+char* customDeviceName = "SimulatedDvice";
+char* customDeviceSerialNumber = "101";
+char* customDeviceAssetTag = "Device Asset Virtual Tag";
+char* customDeviceMAC = "0123456";
+char* customChannelTag = "596";
 
 
 /*

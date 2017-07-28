@@ -1,3 +1,5 @@
+#include <unistd.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "iot_device.h"
@@ -57,18 +59,47 @@ int main(int argc, char** argv) {
     device.serial = deviceSerialNumber;
     device.assetTag = deviceAssetTag;
     device.mac = deviceMAC;
+	
+    device.subDevices =  iot_list_create();
+
+
+
+    IOT_DATA_DEVICE_ITEM subdevice;
+
+    /* Create a multi-purpose IOT_DATA to house DEVICE_TREE type IoT data */
+    IOT_DATA subdeviceMetadata;
+    subdeviceMetadata.dataType = DEVICE_TREE;
+    subdeviceMetadata.devices = iot_list_create();
+
+    /* Set the device's metadata per the respective global variable values */
+
+
+//    subdevice.deviceUUID = "b9b02e15-8eab-5fbb-9fc1-458ca5cc9b83";
+    subdevice.deviceUUID = "ce04ec44-b246-564e-ad4d-3cc4ee19cc6d";
+
+    subdevice.profile = "c655b09e-bc8b-11e6-a4a6-cec0c932ce01";
+    subdevice.name = "sub_simulated";
+    subdevice.serial = "sub seri";
+    subdevice.assetTag = "sub deviceAssetTag";
+    subdevice.mac = "sub deviceMAC";
+    subdevice.subDevices = NULL; 
+	
 
     /** Add the populated device item to a list of devices
      * (to contain only one device for this example),
      * which will be associated w/the connection handle.
      */
+    iot_list_add(device.subDevices, &subdevice);
+
     iot_list_add(deviceMetadata.devices, &device);
+
+//	 iot_list_add(deviceMetadata.devices.subDevices, $subdevice);
 
     /** Functionality exists to facilitate building a network\device tree.
      * For demo purposes, we'll only create a placeholder list for sub-devices,
      * which again is not required.
      */
-    device.subDevices = NULL;
+    //device.subDevices = NULL;
 
     /** Send the device's (or device tree's) meta from the device to the IoT Hub
      * NOTE: iot_send is part of the Eaton IoT Device SDK
@@ -96,13 +127,15 @@ int main(int argc, char** argv) {
 
     IOT_DATA trendData;
     trendData.dataType = TRENDS;
-    trendData.deviceUUID = (char*) deviceUUID;
+    trendData.deviceUUID = (char*) subdevice.deviceUUID;
     trendData.trends = iot_list_create();
+
+    time_t  tt = time(NULL);
 
     /* Set trend value(s) */
     IOT_DATA_TREND_ITEM trendItem;
     trendItem.channelTag = channelTag;
-    trendItem.time = 1465169399;
+    trendItem.time = tt; //1465169399;
     trendItem.minValue = "1.0";
     trendItem.maxValue = "999.0";
     trendItem.actValue = "456.0";
@@ -161,12 +194,24 @@ int main(int argc, char** argv) {
 
     printf("\n\n >> --------- Prepare and Send Device Channel Real-time Data from Device --------- << \n\n");
 
-    IOT_DATA_CHANNEL_REALTIMES_ITEM channelRealtime = {channelTag, 0, 0, "10.0", false, false, false};
+	
+    int i;
+   for  (i=1;  i<100;  i=i+1)
+{
+    tt = time(NULL);
+     float v;
+     char  str_v[15]; 
+     v  =  rand() % 20;
+     sprintf(str_v, "%f", v);
+     IOT_DATA_CHANNEL_REALTIMES_ITEM channelRealtime = {channelTag, tt, 313, str_v, false, false, false};
+    
 
     /* Build a device channel real-time message */
     IOT_DATA channelRealtimeData;
     channelRealtimeData.dataType = CHANNEL_REALTIMES;
-    channelRealtimeData.deviceUUID = (char*) deviceUUID;
+//    channelRealtimeData.deviceUUID = (char*) deviceUUID;
+    channelRealtimeData.deviceUUID = (char*) subdevice.deviceUUID;
+
     channelRealtimeData.channelRealtimes = iot_list_create();
 
     iot_list_add(channelRealtimeData.channelRealtimes, &channelRealtime);
@@ -183,6 +228,10 @@ int main(int argc, char** argv) {
     iot_list_destroy(channelRealtimeData.channelRealtimes);
 
     printf("\n\n >> --------- PUBLISH DEVICE CHANNEL\\POINT REAL-TIME DATA END --------- << \n\n");
+    
+    sleep(5);
+}
+
 
 
     /* Wait for user input to terminate the session */
